@@ -64,4 +64,4 @@ if message == "who made you":
         st.markdown(message)
     with st.chat_message("assistant"):
         st.markdown(f"I am made by {CREATOR_NAME}")
-    st.session_state.messages.append({"role": "user
+    st.session_state.messages.append({"role": "user"})
