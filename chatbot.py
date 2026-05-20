@@ -1,27 +1,28 @@
-# pyrefly: ignore [missing-import]
 import streamlit as st
 import requests
+import os
+from dotenv import load_dotenv
 
-# OpenRouter API Key
-API_KEY = "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"
+load_dotenv()
 
+# Configuration (easy to change)
+API_KEY = os.getenv("API_KEY", "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")
+API_URL = os.getenv("API_URL", "https://openrouter.ai/api/v1/chat/completions")
+MODEL = os.getenv("MODEL", "nvidia/nemotron-3-super-120b-a12b:free")
+CREATOR_NAME = os.getenv("CREATOR_NAME", "wangchuk")
 
-# API URL
-url = "https://openrouter.ai/api/v1/chat/completions"
+# Set up page configuration
+st.set_page_config(page_title=f"Chatbot by {CREATOR_NAME}", page_icon="🤖", layout="centered")
 
-# Set up page configuration with a modern feel
-st.set_page_config(page_title="This is made by wangchuk", page_icon="🤖", layout="centered")
-
-# Inject premium custom CSS styling (gradient header, smooth animations, elegant fonts)
+# CSS styling
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
     
-    html, body, {
+    html, body {
         font-family: 'Outfit', sans-serif;
     }
     
-    /* Glowing Title */
     .title-container {
         text-align: center;
         padding: 1.5rem 0;
@@ -33,7 +34,6 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
-    /* Subtle subtitle */
     .subtitle-container {
         text-align: center;
         color: #888888;
@@ -44,74 +44,24 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="title-container">🤖 This Chatbot made by wangchuks</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="title-container">🤖 Chatbot by {CREATOR_NAME}</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle-container">Powered by OpenRouter</div>', unsafe_allow_html=True)
 
-# Initialize chat history in Streamlit session state
-
-
+# Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display all messages from the chat history on every rerun
+# Display chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# User input using modern chat input
+# User input
 message = st.chat_input("Ask AI:")
 
 if message == "who made you":
     with st.chat_message("user"):
         st.markdown(message)
     with st.chat_message("assistant"):
-        st.markdown("I am made by Wangchuk")
-    st.session_state.messages.append({"role":"assistant","content":'I am made by Wangchuk'})
-    st.session_state.messages.append({"role":"user","content":message})
-
-
-elif message:
-    # Display the user message immediately
-    with st.chat_message("user"):
-        st.markdown(message)
-    
-    # Save the user message to history
-    st.session_state.messages.append({"role": "user", "content": message})
-    
-    # Setup headers and payload for OpenRouter
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    # We include all message history to let the AI understand context
-    data = {
-        "model": "nvidia/nemotron-3-super-120b-a12b:free",
-        "messages": [
-            {"role": msg["role"], "content": msg["content"]} 
-            for msg in st.session_state.messages
-        ]
-    }
-    
-    # Display a loader while the request is being sent
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        with st.spinner("Thinking..."):
-            try:
-                response = requests.post(url, headers=headers, json=data)
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    ai_reply = result["choices"][0]["message"]["content"]
-                    
-                    # Render AI response
-                    message_placeholder.markdown(ai_reply)
-                    
-                    # Save AI reply to history
-                    st.session_state.messages.append({"role": "assistant", "content": ai_reply})
-                else:
-                    message_placeholder.error(f"Error {response.status_code}: Could not fetch response.")
-                    st.error(response.text)
-                    
-            except Exception as e:
-                message_placeholder.error(f"Request failed: {e}")
+        st.markdown(f"I am made by {CREATOR_NAME}")
+    st.session_state.messages.append({"role": "user
