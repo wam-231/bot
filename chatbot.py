@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration (easy to change)
-API_KEY = os.getenv("API_KEY", "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")
+API_KEY = os.getenv("API_KEY", "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")
 API_URL = os.getenv("API_URL", "https://openrouter.ai/api/v1/chat/completions")
 MODEL = os.getenv("MODEL", "nvidia/nemotron-3-super-120b-a12b:free")
 CREATOR_NAME = os.getenv("CREATOR_NAME", "wangchuk")
